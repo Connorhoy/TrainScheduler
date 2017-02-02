@@ -1,12 +1,11 @@
 // JS Code for Train Scheduler Homework Assignment
 // Project Title: Train Scheduler
-// Created by Connor Hoy, worked in tandem with Austin I, with most JS taken from online, but edited and understood.
+// Created by Connor Hoy and Austin Ignaczak, with most JS taken from online, but edited and understood.
 // .diff() is life.
 
 
 
-  // Initializ Firebase
-
+// Initialize Firebase
   var config = {
     apiKey: "AIzaSyDKv1Qw9cG5JdYGP-B6oMmfNijPl9mrEGs",
     authDomain: "trainschedulerapp-cf0f4.firebaseapp.com",
@@ -14,8 +13,8 @@
     storageBucket: "trainschedulerapp-cf0f4.appspot.com",
     messagingSenderId: "121382734539"
   };
-
   firebase.initializeApp(config);
+
 
   // Making a reference to the database.
   var database = firebase.database();
@@ -31,7 +30,7 @@ var minutesAway = '';
 var firstTimeConverted = '';
 var currentTime = '';
 var diffTime = '';
-var tRemainder = '';
+var timeRemaining = '';
 var minutesTillTrain = '';
 var keyHolder = '';
 var getKey = '';
@@ -40,68 +39,66 @@ var getKey = '';
 $(document).ready(function() {
 
      $("#add-train").on("click", function() {
-      console.log("button clicked");
+      event.preventDefault();
 
-      // Prevents defualt action being taken.
-       event.preventDefault();
-
-     	name = $('#name-input').val().trim();
-     	destination = $('#destination-input').val().trim();
-     	firstTrainTime = $('#first-train-time-input').val().trim();
-     	frequency = $('#frequency-input').val().trim();
+      name = $('#name-input').val().trim();
+      destination = $('#destination-input').val().trim();
+      firstTrainTime = $('#first-train-time-input').val().trim();
+      frequency = $('#frequency-input').val().trim();
           firstTimeConverted = moment(firstTrainTime, "hh:mm").subtract(1, "years");
           currentTime = moment();
-          diffTime = moment().diff(moment(firstTimeConverted), "minutes");
-          tRemainder = diffTime % frequency;
-          minutesTillTrain = frequency - tRemainder;
+          differentTime = moment().diff(moment(firstTimeConverted), "minutes");
+          timeRemaining = diffTime % frequency;
+          minutesTillTrain = frequency - timeRemaining;
           nextTrain = moment().add(minutesTillTrain, "minutes");
           nextTrainFormatted = moment(nextTrain).format("hh:mm");
 
-     	// Code for the push.
-     	database.ref().push({
-     		name: name,
-     		destination: destination,
-     		firstTrainTime: firstTrainTime,  
-     		frequency: frequency,
-               nextTrainFormatted: nextTrainFormatted,
-               minutesTillTrain: minutesTillTrain
-     	});
+      // Code for the push.
+      database.ref().push({
+        name: name,
+        destination: destination,
+        firstTrainTime: firstTrainTime,  // 2:22 in my example
+        frequency: frequency,
+        nextTrainFormatted: nextTrainFormatted,
+        minutesTillTrain: minutesTillTrain
+      });
 
-     	$('#name-input').val('');
-     	$('#destination-input').val('');
-     	$('#first-train-time-input').val('');
-     	$('#frequency-input').val('');
+      $('#name-input').val('');
+      $('#destination-input').val('');
+      $('#first-train-time-input').val('');
+      $('#frequency-input').val('');
 
-     	return false;
+      return false;
      });
 
      database.ref().on("child_added", function(childSnapshot) {
-
-		$('.train-schedule').append("<tr class='table-row' id=" + "'" +  + "'" + ">" +
+    $('.train-schedule').append("<tr class='table-row' id=" + "'" + "" + "'" + ">" +
                "<td class='col-xs-3'>" + childSnapshot.val().name +
                "</td>" +
                "<td class='col-xs-2'>" + childSnapshot.val().destination +
                "</td>" +
                "<td class='col-xs-2'>" + childSnapshot.val().frequency +
                "</td>" +
-               "<td class='col-xs-2'>" + childSnapshot.val().nextTrainFormatted + 
+               "<td class='col-xs-2'>" + childSnapshot.val().nextTrainFormatted + // Next Arrival Formula ()
                "</td>" +
-               "<td class='col-xs-2'>" + childSnapshot.val().minutesTillTrain + 
+               "<td class='col-xs-2'>" + childSnapshot.val().minutesTillTrain + // Minutes Away Formula
                "</td>" +
                "<td class='col-xs-1'>" + "<input type='submit' value='remove train' class='remove-train btn btn-primary btn-sm'>" + "</td>" +
           "</tr>");
 
 // Handles and consoles out any errors.
 }, function(errorObject){
-	console.log("Errors handled: " + errorObject.code)
+  console.log("Errors handled: " + errorObject.code)
 });
 
 
-// Allows the user to remove a train from the selection. (BONUS POINTS BABY)
+// Couldn't quite get this to work, but we tried. :)
 $("body").on("click", ".remove-train", function(){
      $(this).closest ('tr').remove();
-     getKey = $(this).parent().attr('id');
-     database.child(getKey).remove();
+     getKey = $(this).parent().parent().attr('id');
+     database.ref().on(getKey).remove();
 });
 
+
 }); 
+
