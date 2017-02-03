@@ -3,3 +3,9 @@
 body {
 	background-image: url("https://s-media-cache-ak0.pinimg.com/originals/c8/6d/5c/c86d5c9700ee4f5329907e09d5b248ba.jpg");
 }
+
+.spacing 
+{
+margin-right: 5px;
+margin-bottom: 5px !important;
+}

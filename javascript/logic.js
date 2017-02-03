@@ -83,7 +83,7 @@ $(document).ready(function() {
                "</td>" +
                "<td class='col-xs-2'>" + childSnapshot.val().minutesTillTrain + // Minutes Away Formula
                "</td>" +
-               "<td class='col-xs-1'>" + "<input type='submit' value='remove train' class='remove-train btn btn-primary btn-sm'>" + "</td>" +
+               "<td class='col-xs-1'>" + "<input type='submit' value='remove train' class='remove-train btn btn-primary btn-sm spacing'>" + "</td>" +
           "</tr>");
 
 // Handles and consoles out any errors.
